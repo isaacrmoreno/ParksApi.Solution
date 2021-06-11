@@ -70,7 +70,6 @@ namespace ParkApi.Controllers
 
       return NoContent();
     }
-    
     // POST api/parks
     [HttpPost]
     public async Task<ActionResult<Park>> Post(Park park)
@@ -79,6 +78,22 @@ namespace ParkApi.Controllers
       await _db.SaveChangesAsync();
       return CreatedAtAction(nameof(GetPark), new { id = park.ParkId }, park);
     }
+    // DELETE: api/Parks/5
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeletePark(int id)
+    {
+      var park = await _db.Parks.FindAsync(id);
+      if (park == null)
+      {
+        return NotFound();
+      }
+
+      _db.Parks.Remove(park);
+      await _db.SaveChangesAsync();
+
+      return NoContent();
+    }
+    
       private bool ParkExists(int id)
     {
       return _db.Parks.Any(e => e.ParkId == id);
