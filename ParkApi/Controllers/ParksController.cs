@@ -22,9 +22,27 @@ namespace ParkApi.Controllers
 
     // GET api/parks
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Park>>> Get()
+    public async Task<ActionResult<IEnumerable<Park>>> Get(string ParkName, string ParkDescription, string AmenitiesFacilities, string Region)
     {
-      return await _db.Parks.ToListAsync();
+      var query = _db.Parks.AsQueryable();
+
+      if (ParkName != null)
+      {
+        query = query.Where(entry => entry.ParkName == ParkName);
+      }
+      if (ParkDescription != null)
+      {
+        query = query.Where(entry => entry.ParkDescription == ParkDescription);
+      }
+      if (AmenitiesFacilities != null)
+      {
+        query = query.Where(entry => entry.AmenitiesFacilities == AmenitiesFacilities);
+      }
+      if (Region != null)
+      {
+        query = query.Where(entry => entry.Region == Region);
+      }
+      return await query.ToListAsync();
     }
 
     // GET: api/Parks/5
@@ -41,7 +59,7 @@ namespace ParkApi.Controllers
         return park;
     }
 
-        // PUT: api/Parks/5
+    // PUT: api/Parks/5
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(int id, Park park)
     {
@@ -93,7 +111,7 @@ namespace ParkApi.Controllers
 
       return NoContent();
     }
-    
+
       private bool ParkExists(int id)
     {
       return _db.Parks.Any(e => e.ParkId == id);
